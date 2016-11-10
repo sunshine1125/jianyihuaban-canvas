@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--<script src="js/jquery-1.11.3.js"></script>-->
+		<style>
+			*{padding:0; margin:0;}
+			body{ background:#ccc;}
+			#font{display: block;}
+			#canvas,#show{background:#fff; margin:0px 10px 30px 10px; }
+			input{ display:inline-block; width:80px; height:30px; cursor:pointer; margin-left:10px;}
+			#show{position: absolute;left:520px;top:80px;display: block;}
+		</style>
+	</head>
+	<body>
+		<canvas width="500" height="80" id="font"></canvas>
+		 <canvas width="500" height="500" id="canvas"></canvas>
+		 <img src="" width="500" height="500" id="show" />
+   		 <div>
+	        <input type="button" value="红画笔" id="red">
+	        <input type="button" value="绿画笔" id="green">
+	        <input type="button" value="蓝画笔" id="blue">
+	        <input type="button" value="渐变画笔" id="color"/>
+	        <input type="button" value="重置颜色" id="default">
+	        <input type="button" value="清除画布" id="clear">
+	        <input type="button" value="粗线条" id="rough" />
+	        <input type="button" value="细线条" id="reset" />
+   		</div>
+	</body>
+	<script>
+		var canvas = document.getElementById("canvas");
+		var font = document.getElementById("font");
+		var ctx = canvas.getContext("2d");
+		var context = font.getContext("2d");
+		var oInput = document.getElementsByTagName("input");
+		var img=document.getElementById('show');
+		//console.log(oInput[0]);
+		var grd=context.createRadialGradient(75,50,5,90,60,100);
+		var grd1=ctx.createLinearGradient(75,200,100,500);
+		grd.addColorStop(0,"red");
+		grd.addColorStop(1,"purple");
+		grd1.addColorStop(0,"red");
+		grd1.addColorStop(1,"purple");
+		context.font="50px Arial";
+		context.strokeStyle = grd;
+		context.strokeText("简易画板",10,50)
+		oInput[0].onclick=function(){
+			ctx.strokeStyle="#f00";
+		}
+		
+		oInput[1].onclick=function(){
+			ctx.strokeStyle="#0f0";
+		}
+		
+		oInput[2].onclick=function(){
+			ctx.strokeStyle="#00f";
+		}
+		oInput[3].onclick=function(){
+			ctx.strokeStyle=grd1;
+		}
+		oInput[4].onclick=function(){
+			ctx.strokeStyle="#000";
+		}
+		
+		oInput[5].onclick=function(){
+			ctx.clearRect(0,0,500,500);
+			img.src="";
+		}
+		
+		oInput[6].onclick=function(){
+			ctx.lineWidth=20;
+		}
+		
+		oInput[7].onclick=function(){
+			ctx.lineWidth=5;
+		}
+		
+		canvas.onmousedown=function(event){
+			var event = event || window.event;
+			var x = event.clientX;
+			var y = event.clientY;
+			//console.log(x+"=="+y);
+			ctx.beginPath();
+			ctx.moveTo(x-canvas.offsetLeft,y-canvas.offsetTop);
+			document.onmousemove=function(event){
+				var event = event || window.event;
+				var x = event.clientX;
+				var y = event.clientY;
+				ctx.lineTo(x-canvas.offsetLeft,y-canvas.offsetTop);
+				ctx.stroke();
+				var data = canvas.toDataURL();
+				
+				img.src=data;
+			}
+			document.onmouseup=function(){
+				ctx.closePath();
+				document.onmouseup=document.onmousemove=null;
+			}
+			
+		}
+		
+		
+		
+	</script>
+</html>
